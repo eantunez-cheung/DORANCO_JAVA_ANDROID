@@ -1,22 +1,21 @@
 package fr.doranco.calculatrice;
 
 public class Calculateur {
-    private float resultat;
+    private int resultat;
     private OperateurEnum operateurEnum;
-    private float operande;
+    private int operande;
     private String operation = "";
 
     public Calculateur() {
     }
 
-    public void concatenerChiffreOperande(float chiffre) {
+    public void concatenerChiffreOperande(int chiffre) {
         if (chiffre >= 0 && chiffre < 10) {
             setOperande(operande * 10 + chiffre);
         }
     }
 
     public void concatenerOperation(String value){
-        String str = getOperation();
         setOperation(getOperation() + value);
     }
 
@@ -52,7 +51,7 @@ public class Calculateur {
         return resultat;
     }
 
-    public void setResultat(float resultat) {
+    public void setResultat(int resultat) {
         this.resultat = resultat;
     }
 
@@ -64,11 +63,11 @@ public class Calculateur {
         this.operateurEnum = operateurEnum;
     }
 
-    public float getOperande() {
+    public int getOperande() {
         return operande;
     }
 
-    public void setOperande(float operande) {
+    public void setOperande(int operande) {
         this.operande = operande;
         if (operateurEnum == null) {
             setResultat(operande);

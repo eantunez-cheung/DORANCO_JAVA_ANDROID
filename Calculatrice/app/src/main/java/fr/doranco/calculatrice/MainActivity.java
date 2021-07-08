@@ -2,9 +2,13 @@ package fr.doranco.calculatrice;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -12,6 +16,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final Calculateur calculateur;
+    private List<String> listOperation = new ArrayList<String>();
     private boolean isCaculate = false;
     private boolean isOperateur = false;
 
@@ -29,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         final Button btnEgal = this.findViewById(R.id.btn_egal);
         final Button btnReset = this.findViewById(R.id.btn_reset);
         final Button btnClear = this.findViewById(R.id.btn_clear);
+        final ScrollView svOperation = this.findViewById(R.id.sv_operation);
+
+        ListView listViewOperation = this.findViewById(R.id.list_operation);
 
         final List<Button> buttonsOperateurs = new ArrayList<Button>();
         buttonsOperateurs.add(findViewById(R.id.btn_plus));
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         for (Button buttonChiffre : buttonsChiffres) {
             buttonChiffre.setOnClickListener(view -> {
                 Button b = (Button) view;
-                float chiffreSaisi = Float.parseFloat(b.getText().toString());
+                int chiffreSaisi = Integer.parseInt(b.getText().toString());
                 calculateur.concatenerChiffreOperande(chiffreSaisi);
                 textViewResultat.setText(calculateur.getOperande() + "");
             });
@@ -62,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             buttonOperateur.setOnClickListener(view -> {
                 Button b = (Button) view;
                 String operateur = b.getText().toString();
-                if (isOperateur){
+                if (isOperateur) {
                     calculateur.calculer();
                 }
                 switch (operateur) {
@@ -85,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
                     if (isCaculate) {
                         calculateur.setOperande(0);
                         calculateur.setOperation("");
-                        calculateur.concatenerOperation(calculateur.getResultat() + operateur);
+                        calculateur.concatenerOperation(calculateur.getResultat() + " " + operateur);
                     } else {
-                        calculateur.concatenerOperation(calculateur.getOperande() + operateur);
+                        calculateur.concatenerOperation(" " + calculateur.getOperande() + " " + operateur);
                         calculateur.setOperande(0);
                         textViewResultat.setText("0");
                     }
@@ -109,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
             isOperateur = false;
             isCaculate = false;
         });
-
         btnClear.setOnClickListener(view -> {
             if (!isCaculate) {
                 calculateur.effacerOperande();
@@ -118,13 +125,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnEgal.setOnClickListener(view -> {
-            if (calculateur.getOperateurEnum().equals(OperateurEnum.DIVISION) && calculateur.getOperande() == 0) {
+            if (calculateur.getOperateurEnum().equals(OperateurEnum.DIVISION)
+                    && calculateur.getOperande() == 0) {
                 textViewResultat.setText("Division par zero impossible !");
             } else {
                 calculateur.calculer();
                 textViewResultat.setText(calculateur.getResultat() + "");
-                calculateur.concatenerOperation(calculateur.getOperande() + "=");
+                calculateur.concatenerOperation( " " +calculateur.getOperande() + " = ");
                 txtOperation.setText(calculateur.getOperation());
+                calculateur.concatenerOperation(calculateur.getResultat() + "");
+                listOperation.add(calculateur.getOperation());
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listOperation);
+                listViewOperation.setAdapter(adapter);
             }
             isCaculate = true;
             isOperateur = false;
