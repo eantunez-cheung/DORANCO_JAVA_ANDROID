@@ -47,7 +47,7 @@ public class Calculateur {
         }
     }
 
-    public float getResultat() {
+    public int getResultat() {
         return resultat;
     }
 

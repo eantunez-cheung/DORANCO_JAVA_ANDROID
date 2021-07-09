@@ -12,11 +12,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final Calculateur calculateur;
-    private List<String> listOperation = new ArrayList<String>();
+    private LinkedList<String> listOperation = new LinkedList<String>();
     private boolean isCaculate = false;
     private boolean isOperateur = false;
 
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         final Button btnEgal = this.findViewById(R.id.btn_egal);
         final Button btnReset = this.findViewById(R.id.btn_reset);
         final Button btnClear = this.findViewById(R.id.btn_clear);
-        final ScrollView svOperation = this.findViewById(R.id.sv_operation);
 
         ListView listViewOperation = this.findViewById(R.id.list_operation);
 
@@ -93,9 +93,11 @@ public class MainActivity extends AppCompatActivity {
                     if (isCaculate) {
                         calculateur.setOperande(0);
                         calculateur.setOperation("");
-                        calculateur.concatenerOperation(calculateur.getResultat() + " " + operateur);
+                        calculateur.concatenerOperation(calculateur.getResultat() + " "
+                                + operateur);
                     } else {
-                        calculateur.concatenerOperation(" " + calculateur.getOperande() + " " + operateur);
+                        calculateur.concatenerOperation(" " + calculateur.getOperande() + " "
+                                + operateur);
                         calculateur.setOperande(0);
                         textViewResultat.setText("0");
                     }
@@ -129,13 +131,21 @@ public class MainActivity extends AppCompatActivity {
                     && calculateur.getOperande() == 0) {
                 textViewResultat.setText("Division par zero impossible !");
             } else {
+                if (isCaculate){
+                    calculateur.setOperation("");
+                    calculateur.concatenerOperation(calculateur.getResultat() + " "
+                            + calculateur.getOperateurEnum().getOperateur() + " "
+                            + calculateur.getOperande() + " = ");
+                } else {
+                    calculateur.concatenerOperation( " " + calculateur.getOperande() + " = ");
+                }
                 calculateur.calculer();
                 textViewResultat.setText(calculateur.getResultat() + "");
-                calculateur.concatenerOperation( " " +calculateur.getOperande() + " = ");
                 txtOperation.setText(calculateur.getOperation());
                 calculateur.concatenerOperation(calculateur.getResultat() + "");
-                listOperation.add(calculateur.getOperation());
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listOperation);
+                listOperation.addFirst(calculateur.getOperation());
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout
+                        .simple_list_item_1, listOperation);
                 listViewOperation.setAdapter(adapter);
             }
             isCaculate = true;
